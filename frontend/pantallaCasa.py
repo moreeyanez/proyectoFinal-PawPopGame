@@ -132,9 +132,6 @@ def pantalla_casa(tipo_mascota, nombre_mascota):
 
         pygame.display.flip()
 
-# --- EJEMPLO DE PRUEBA ---
-# (Después se reemplaza con los datos del jugador real)
-# pantalla_casa("capibara", "Popi")
 
 def mostrar_pantalla_casa(mascota):
     """
