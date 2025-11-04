@@ -79,7 +79,7 @@ def pantalla_inicio():
                     if nombre and mail:
                         try:
                             crear_jugador(nombre, mail)
-                            pantalla_huevo()
+                            pantalla_huevo(nombre)
 
                         except ValueError as e:
                             print("Error:", e)
