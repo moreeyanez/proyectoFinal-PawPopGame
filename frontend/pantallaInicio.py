@@ -3,6 +3,9 @@ import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.controlador import crear_jugador
 
+from frontend.pantallaHuevo import pantalla_huevo
+
+
 pygame.init()
 
 #VENTANA
@@ -76,7 +79,7 @@ def pantalla_inicio():
                     if nombre and mail:
                         try:
                             crear_jugador(nombre, mail)
-                            print("¡Jugador creado con éxito!")
+                            pantalla_huevo()
 
                         except ValueError as e:
                             print("Error:", e)
