@@ -61,35 +61,24 @@ def pantalla_huevo(nombre_mascota):
         dibujar_texto("Elegí tu mascota", fuente_titulo, TEXTO, 220, 50)
         
         if imagen_huevito:
-            # Animación de temblor
             offset += direccion
             if abs(offset) > 5:
                 direccion *= -1
 
             VENTANA.blit(imagen_huevito, (ANCHO // 2 - 100 + offset, 150))
 
-            # VENTANA.blit(imagen_huevito, (ANCHO // 2 - 100, 150))
 
         for boton, especie in botones:
-            # Dibujar botón con borde
             mouse_pos = pygame.mouse.get_pos()
             color_boton = VERDE if not boton.collidepoint(mouse_pos) else (180, 160, 120)
 
-            pygame.draw.rect(VENTANA, color_boton, boton)  # Fondo con hover
-            pygame.draw.rect(VENTANA, TEXTO, boton, 2)     # Borde
+            pygame.draw.rect(VENTANA, color_boton, boton)
+            pygame.draw.rect(VENTANA, TEXTO, boton, 2) 
 
-            # pygame.draw.rect(VENTANA, VERDE, boton)  # Fondo
-            # pygame.draw.rect(VENTANA, TEXTO, boton, 2)  # Borde de 2px
-
-            # Centrar texto
             texto_superficie = fuente_boton.render(especie, True, TEXTO)
             texto_rect = texto_superficie.get_rect(center=boton.center)
             VENTANA.blit(texto_superficie, texto_rect)
 
-
-        # for boton, especie in botones:
-        #     pygame.draw.rect(VENTANA, VERDE, boton)
-        #     dibujar_texto(especie, fuente_boton, TEXTO, boton.x + 10, boton.y + 8)
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -106,7 +95,7 @@ def pantalla_huevo(nombre_mascota):
                             crear_mascota(nombre_mascota, especie)
                             mascota = campo.mascota
                             mostrar_pantalla_casa(mascota)
-                            return  # ← Esto corta el bucle sin cerrar Pygame
+                            return
 
                         except Exception as e:
                             print("Error al crear mascota:", e)

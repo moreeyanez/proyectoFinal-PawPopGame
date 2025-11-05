@@ -24,7 +24,6 @@ def pantalla_casa(tipo_mascota, nombre_mascota):
     fondo_noche = pygame.image.load("assets/campitoNoche.png")
     fondo_noche = pygame.transform.scale(fondo_noche, (ANCHO, ALTO))
 
-    # Imágenes de mascotas (por tipo y estado)
     imagenes_mascotas = {
         "perro": {
             "normal": "assets/Mascotas/Perrito feliz.png",
@@ -142,17 +141,4 @@ def mostrar_pantalla_casa(mascota):
 
     pantalla_casa(especie.lower(), nombre)
 
-
-    
-    '''
-     # Cargar imagen según especie
-    ruta = os.path.join("assets", f"{especie.lower()}.png")
-    try:
-        imagen = pygame.image.load(ruta)
-        imagen = pygame.transform.scale(imagen, (200, 250))  # Opcional: ajustar tamaño
-    except pygame.error as e:
-        print(f"No se pudo cargar la imagen de {especie}:", e)
-        imagen = None
-
-    '''
    
