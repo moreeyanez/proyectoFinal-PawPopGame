@@ -45,11 +45,13 @@ for i, especie in enumerate(especies):
     boton = pygame.Rect(x, 450, 100, 40)
     botones.append((boton, especie))
 
+boton_historial = pygame.Rect(325, 520, 150, 40)
+
 def dibujar_texto(texto, fuente, color, x, y):
     superficie = fuente.render(texto, True, color)
     VENTANA.blit(superficie, (x, y))
 
-def pantalla_huevo(nombre_mascota):
+def pantalla_huevo():
     reloj = pygame.time.Clock()
     offset = 0
     direccion = 1
@@ -73,8 +75,10 @@ def pantalla_huevo(nombre_mascota):
             color_boton = VERDE if not boton.collidepoint(mouse_pos) else (180, 160, 120)
 
             pygame.draw.rect(VENTANA, color_boton, boton)
-            pygame.draw.rect(VENTANA, TEXTO, boton, 2) 
-
+            pygame.draw.rect(VENTANA, TEXTO, boton, 2)
+            pygame.draw.rect(VENTANA, VERDE, boton_historial)
+            dibujar_texto("Historial", fuente_boton, TEXTO, boton_historial.x + 25, boton_historial.y + 10)
+ 
             texto_superficie = fuente_boton.render(especie, True, TEXTO)
             texto_rect = texto_superficie.get_rect(center=boton.center)
             VENTANA.blit(texto_superficie, texto_rect)
@@ -89,17 +93,16 @@ def pantalla_huevo(nombre_mascota):
                 for boton, especie in botones:
                     if boton.collidepoint(evento.pos):
                         try:
-                            from backend.controlador import crear_mascota, campo
-                            from frontend.pantallaCasa import mostrar_pantalla_casa
-
-                            crear_mascota(nombre_mascota, especie)
-                            mascota = campo.mascota
-                            mostrar_pantalla_casa(mascota)
+                            from frontend.pantallaNombrarMascota import pantalla_nombrar_mascota
+                            pantalla_nombrar_mascota(especie)  # solo especie
                             return
-
                         except Exception as e:
-                            print("Error al crear mascota:", e)
-
+                            print("Error al elegir especie:", e)
+                    
+                    if boton_historial.collidepoint(evento.pos):
+                        from frontend.pantallaHistorial import pantalla_historial
+                        pantalla_historial()
+                        return
 
         pygame.display.flip()
         reloj.tick(30)

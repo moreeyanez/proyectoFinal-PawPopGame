@@ -78,11 +78,15 @@ def pantalla_inicio():
                 if rect_ingresar.collidepoint(evento.pos):
                     if nombre and mail:
                         try:
+                            # Crear jugador con nombre y mail
                             crear_jugador(nombre, mail)
-                            pantalla_huevo(nombre)
+
+                            # Pasar a pantalla de elección de mascota (no se pasa nombre aquí)
+                            pantalla_huevo()
 
                         except ValueError as e:
                             print("Error:", e)
+
 
             if evento.type == pygame.KEYDOWN:
                 if activo_nombre:

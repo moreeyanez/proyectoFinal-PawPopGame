@@ -1,6 +1,6 @@
-import os
 import pygame
 import sys
+from backend.controlador import campo, alimentar_mascota, jugar_con_mascota, dormir_mascota
 
 pygame.init()
 
@@ -16,60 +16,67 @@ GRIS = (220, 220, 220)
 
 fuente = pygame.font.Font(None, 36)
 
-# --- FUNCIÓN PRINCIPAL ---
-def pantalla_casa(tipo_mascota, nombre_mascota):
-    # Imágenes de fondo
+def pantalla_casa():
+    # Fondos
     fondo_dia = pygame.image.load("assets/Campito (1).png")
     fondo_dia = pygame.transform.scale(fondo_dia, (ANCHO, ALTO))
     fondo_noche = pygame.image.load("assets/campitoNoche.png")
     fondo_noche = pygame.transform.scale(fondo_noche, (ANCHO, ALTO))
 
+    # Diccionario de imágenes por especie y estado
     imagenes_mascotas = {
         "perro": {
-            "normal": "assets/Mascotas/Perrito feliz.png",
+            "feliz": "assets/Mascotas/Perrito feliz.png",
             "jugando": "assets/Mascotas/mascotaJugar/Perrito jugar.png",
             "comiendo": "assets/Mascotas/mascotaComerSatis/Perrito satisfecho.png",
-            "dormido": "assets/Mascotas/mascotaDormido/Perrito dormido (2).png"
+            "dormido": "assets/Mascotas/mascotaDormido/Perrito dormido (2).png",
+            "enfermo": "assets/Mascotas/mascotaTriste/Perrito triste.png",
+            "empachado": "assets/Mascotas/mascotaEmpachado/Perrito empachadito.png",
+            "cansado": "assets/Mascotas/mascotaTriste/Perrito cansado.png"
         },
         "gato": {
-            "normal": "assets/Mascotas/Gatito feliz.png",
+            "feliz": "assets/Mascotas/Gatito feliz.png",
             "jugando": "assets/Mascotas/mascotaJugar/Gatito jugar.png",
             "comiendo": "assets/Mascotas/mascotaComerSatis/Gatito satisfecho.png",
-            "dormido": "assets/Mascotas/mascotaDormido/Gatito dormido.png"
+            "dormido": "assets/Mascotas/mascotaDormido/Gatito dormido.png",
+            "enfermo": "assets/Mascotas/mascotaTriste/Gatito triste.png",
+            "empachado": "assets/Mascotas/mascotaEmpachado/Gatito empachadito.png",
+            "cansado": "assets/Mascotas/mascotaTriste/Gatito cansado.png"
         },
         "vaca": {
-            "normal": "assets/Mascotas/Vaquita feliz.png",
+            "feliz": "assets/Mascotas/Vaquita feliz.png",
             "jugando": "assets/Mascotas/mascotaJugar/Vaquita jugar.png",
             "comiendo": "assets/Mascotas/mascotaComerSatis/Vaquita gamer.png",
-            "dormido": "assets/Mascotas/mascotaDormido/Vaquita dormida.png"
+            "dormido": "assets/Mascotas/mascotaDormido/Vaquita dormida.png",
+            "enfermo": "assets/Mascotas/mascotaTriste/Vaquita triste.png",
+            "empachado": "assets/Mascotas/mascotaEmpachado/Vaquita empachadita.png",
+            "cansado": "assets/Mascotas/mascotaTriste/Vaquita cansada.png"
         },
         "capibara": {
-            "normal": "assets/Mascotas/Carpinchito feliz.png",
+            "feliz": "assets/Mascotas/Carpinchito feliz.png",
             "jugando": "assets/Mascotas/mascotaJugar/Carpinchito jugar.png",
             "comiendo": "assets/Mascotas/mascotaComerSatis/Carpinchito satisfecho.png",
-            "dormido": "assets/Mascotas/mascotaDormido/Carpinchito dormido.png"
+            "dormido": "assets/Mascotas/mascotaDormido/Carpinchito dormido.png",
+            "enfermo": "assets/Mascotas/mascotaTriste/Carpinchito triste.png",
+            "empachado": "assets/Mascotas/mascotaEmpachado/Capibara empachadito.png",
+            "cansado": "assets/Mascotas/mascotaTriste/Carpinchito cansado.png"
         },
         "conejo": {
-            "normal": "assets/Mascotas/Conejito feliz.png",
+            "feliz": "assets/Mascotas/Conejito feliz.png",
             "jugando": "assets/Mascotas/mascotaJugar/Conejito jugar.png",
             "comiendo": "assets/Mascotas/mascotaComerSatis/Conejito satisfecho.png",
-            "dormido": "assets/Mascotas/mascotaDormido/Conejito dormido (1).png"
+            "dormido": "assets/Mascotas/mascotaDormido/Conejito dormido (1).png",
+            "enfermo": "assets/Mascotas/mascotaTriste/Conejito triste.png",
+            "empachado": "assets/Mascotas/mascotaEmpachado/Conejito empachadito.png",
+            "cansado": "assets/Mascotas/mascotaTriste/Conejito cansado.png"
         }
     }
 
-    # Estado inicial
-    estado = "normal"
     fondo_actual = fondo_dia
-
-    # Porcentajes iniciales (para futuro uso)
-    energia = 100
-    alimentacion = 100
-
-    # Posición de mascota
     mascota_x = ANCHO // 2 - 100
     mascota_y = ALTO // 2 - 100
 
-    # --- BOTONES ---
+    # Botones principales
     botones = {
         "alimentar": pygame.Rect(100, 500, 120, 50),
         "jugar": pygame.Rect(250, 500, 120, 50),
@@ -86,33 +93,104 @@ def pantalla_casa(tipo_mascota, nombre_mascota):
              rect.y + (rect.height - texto_render.get_height()) // 2)
         )
 
-    # --- LOOP PRINCIPAL ---
+    # Estado de acción (alimentar/jugar/dormir)
+    estado_accion = None
+    # Popup de alerta (control)
+    mostrar_popup_enfermo = False
+    popup_alpha = 160
+    # Para evitar reabrir el popup automáticamente si el usuario lo cerró
+    popup_cerrado_manual = False
+
     while True:
+        # Rectángulos del popup (se recalculan cada iteración)
+        caja_popup = pygame.Rect(ANCHO // 2 - 220, ALTO // 2 - 120, 440, 220)
+        boton_hosp = pygame.Rect(caja_popup.x + 40, caja_popup.y + 130, 160, 44)
+        boton_ok = pygame.Rect(caja_popup.x + caja_popup.width - 200, caja_popup.y + 130, 160, 44)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
+                # Si el popup está activo, solo responde a sus botones
+                if mostrar_popup_enfermo:
+                    if boton_hosp.collidepoint(event.pos):
+                        # Navegar a hospital (sin tocar backend aquí para no resetear a Huevo)
+                        import frontend.pantallaHospital
+                        frontend.pantallaHospital.pantalla_hospital()
+                        return
+                    elif boton_ok.collidepoint(event.pos):
+                        # Cerrar popup; imagen seguirá como "enfermo" por prioridad
+                        mostrar_popup_enfermo = False
+                        popup_cerrado_manual = True
+                    # Bloquear otras acciones mientras esté el popup
+                    continue
+
+                # Acciones principales
                 if botones["alimentar"].collidepoint(event.pos):
-                    estado = "comiendo"
+                    alimentar_mascota()
                     fondo_actual = fondo_dia
+                    estado_accion = "comiendo"
+
                 elif botones["jugar"].collidepoint(event.pos):
-                    estado = "jugando"
+                    jugar_con_mascota()
                     fondo_actual = fondo_dia
+                    estado_accion = "jugando"
+
                 elif botones["dormir"].collidepoint(event.pos):
-                    estado = "dormido"
+                    dormir_mascota()
                     fondo_actual = fondo_noche
+                    estado_accion = "dormido"
+
                 elif botones["curar"].collidepoint(event.pos):
-                    # Ir a pantalla hospital
-                    import pantallaHospital
-                    pantallaHospital.pantalla_hospital(tipo_mascota, nombre_mascota)
+                    import frontend.pantallaHospital
+                    frontend.pantallaHospital.pantalla_hospital()
+                    return
+
 
         # --- DIBUJAR ---
         VENTANA.blit(fondo_actual, (0, 0))
 
-        # Imagen de la mascota según estado
-        img_mascota = pygame.image.load(imagenes_mascotas[tipo_mascota][estado])
+        # Traer datos con fallback seguro (evita NameError si la mascota no está)
+        mascota = getattr(campo, "mascota", None)
+        if mascota:
+            tipo_mascota = (mascota.ver_especie() or "perro").lower()
+            nombre_mascota = mascota.ver_nombre() or "Mascota"
+            energia = mascota.ver_energia()
+            alimentacion = mascota.ver_alimentacion()
+            estado_visual = mascota.obtener_estado_visual() or "feliz"
+        else:
+            tipo_mascota = "perro"
+            nombre_mascota = "Mascota"
+            energia = 0
+            alimentacion = 0
+            estado_visual = "feliz"
+
+        # Prioridad: enfermo > acción > estado visual
+        if estado_visual == "enfermo":
+            estado_para_mostrar = "enfermo"
+            # Mostrar popup si no fue cerrado manualmente
+            if not popup_cerrado_manual:
+                mostrar_popup_enfermo = True
+        elif estado_accion:
+            estado_para_mostrar = estado_accion
+        else:
+            estado_para_mostrar = estado_visual
+
+        # Cargar imagen con fallback seguro
+        try:
+            ruta_img = imagenes_mascotas[tipo_mascota][estado_para_mostrar]
+            img_mascota = pygame.image.load(ruta_img)
+        except Exception:
+            try:
+                ruta_img = imagenes_mascotas[tipo_mascota]["feliz"]
+                img_mascota = pygame.image.load(ruta_img)
+            except Exception:
+                # Último fallback: rect simple si faltan imágenes
+                img_mascota = pygame.Surface((200, 200))
+                img_mascota.fill((200, 100, 100))
+
         img_mascota = pygame.transform.scale(img_mascota, (200, 200))
         VENTANA.blit(img_mascota, (mascota_x, mascota_y))
 
@@ -125,20 +203,46 @@ def pantalla_casa(tipo_mascota, nombre_mascota):
         VENTANA.blit(texto_energia, (50, 30))
         VENTANA.blit(texto_alimento, (50, 70))
 
-        # Botones
+        # Botones principales
         for texto, rect in botones.items():
             dibujar_boton(rect, texto.capitalize())
 
-        pygame.display.flip()
+        # Dibujar popup si está activo
+        if mostrar_popup_enfermo:
+            # Overlay oscuro
+            overlay = pygame.Surface((ANCHO, ALTO))
+            overlay.set_alpha(popup_alpha)
+            overlay.fill((0, 0, 0))
+            VENTANA.blit(overlay, (0, 0))
 
+            # Caja principal
+            pygame.draw.rect(VENTANA, BLANCO, caja_popup, border_radius=12)
+            pygame.draw.rect(VENTANA, GRIS, caja_popup, width=2, border_radius=12)
+
+            # Textos
+            titulo = fuente.render("¡Tu mascota se enfermó!", True, NEGRO)
+            msg = fuente.render("Llévala al hospital para curarla.", True, NEGRO)
+            VENTANA.blit(titulo, (caja_popup.x + (caja_popup.width - titulo.get_width()) // 2, caja_popup.y + 30))
+            VENTANA.blit(msg, (caja_popup.x + (caja_popup.width - msg.get_width()) // 2, caja_popup.y + 80))
+
+            # Botones del popup
+            pygame.draw.rect(VENTANA, GRIS, boton_hosp, border_radius=8)
+            pygame.draw.rect(VENTANA, GRIS, boton_ok, border_radius=8)
+
+            txt_hosp = fuente.render("Ir al hospital", True, NEGRO)
+            txt_ok = fuente.render("Entendido", True, NEGRO)
+            VENTANA.blit(txt_hosp, (boton_hosp.x + (boton_hosp.width - txt_hosp.get_width()) // 2, boton_hosp.y + 8))
+            VENTANA.blit(txt_ok, (boton_ok.x + (boton_ok.width - txt_ok.get_width()) // 2, boton_ok.y + 8))
+
+        pygame.display.flip()
 
 def mostrar_pantalla_casa(mascota):
     """
-    Recibe una instancia
+    Recibe una instancia de mascota y abre la pantalla de Casa.
+    La instancia no se usa directamente: la lógica toma campo.mascota.
+    Se mantiene la firma para compatibilidad con el flujo existente.
     """
-    especie = mascota.ver_especie()
-    nombre = mascota.ver_nombre()
+    pantalla_casa()
 
-    pantalla_casa(especie.lower(), nombre)
 
    
