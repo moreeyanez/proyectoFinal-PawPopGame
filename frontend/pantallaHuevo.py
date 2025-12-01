@@ -36,7 +36,7 @@ except pygame.error as e:
 
 # BOTONES
 botones = []
-especies = ["Perro", "Gato", "Vaca", "Capybara", "Conejo"]
+especies = ["Perro", "Gato", "Vaca", "Capibara", "Conejo"]
 espaciado = 120
 inicio_x = (ANCHO - (espaciado * len(especies))) // 2 + 60
 

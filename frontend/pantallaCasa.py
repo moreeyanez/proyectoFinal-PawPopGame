@@ -116,16 +116,20 @@ def pantalla_casa():
                 # Si el popup está activo, solo responde a sus botones
                 if mostrar_popup_enfermo:
                     if boton_hosp.collidepoint(event.pos):
-                        # Navegar a hospital (sin tocar backend aquí para no resetear a Huevo)
+                        # Mover la mascota al hospital en backend y luego navegar
+                        from backend.controlador import enviar_al_hospital
+                        enviar_al_hospital()
+
                         import frontend.pantallaHospital
                         frontend.pantallaHospital.pantalla_hospital()
                         return
                     elif boton_ok.collidepoint(event.pos):
-                        # Cerrar popup; imagen seguirá como "enfermo" por prioridad
+                        # Cerrar popup; la imagen seguirá como "enfermo" por prioridad
                         mostrar_popup_enfermo = False
                         popup_cerrado_manual = True
                     # Bloquear otras acciones mientras esté el popup
                     continue
+
 
                 # Acciones principales
                 if botones["alimentar"].collidepoint(event.pos):

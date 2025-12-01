@@ -49,11 +49,14 @@ class Campo(Espacio):
     
     def curar_mascota(self, hospital):
         """
-        Agrega la mascota al hospital para poder curarla
+        Agrega la mascota al hospital para poder curarla.
+        Limpia la referencia en el campo para evitar dobles fuentes de verdad.
         """
         if self.mascota:
             if self.mascota.enfermo:
                 hospital.agregar(self.mascota)
+                # limpiar referencia en campo
+                self.mascota = None
             else:
                 print("La mascota no está enferma")
         else:
@@ -123,12 +126,14 @@ class Hospital(Espacio):
 
     def eliminar(self, libertad):
         """
-        Libera la mascota del hospital.
+        Libera la mascota del hospital y limpia la referencia.
         """
         if self.mascota:
             if self.mascota.enfermo == False:
                 libertad.agregar(self.mascota)
-                print(f"{self.mascota.ver_nombre()} fue dada de alta y está lista para ser liberada.") 
+                print(f"{self.mascota.ver_nombre()} fue dada de alta y está lista para ser liberada.")
+                # limpiar referencia en hospital
+                self.mascota = None
             else:
                 print("La mascota está enferma, antes de liberarla, hay que curarla.")
         else:

@@ -3,6 +3,7 @@ import sys
 from backend.controlador import jugador
 from frontend.pantallaHuevo import pantalla_huevo
 
+
 pygame.init()
 
 ANCHO, ALTO = 800, 600
@@ -71,4 +72,3 @@ def pantalla_historial():
 
 if __name__ == "__main__":
     pantalla_historial()
-

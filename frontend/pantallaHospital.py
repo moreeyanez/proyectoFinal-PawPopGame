@@ -3,6 +3,8 @@ import sys
 from backend.controlador import campo, curar_en_hospital, preparar_liberacion
 from frontend.pantallaCasa import mostrar_pantalla_casa
 from frontend.pantallaLiberacion import pantalla_liberacion
+from backend.controlador import hospital, curar_en_hospital, preparar_liberacion
+
 
 pygame.init()
 
@@ -29,10 +31,10 @@ boton_liberar = pygame.Rect(500, 500, 150, 50)
 
 # Fondo hospital (asegúrate de que el archivo exista en assets/Hospital.png)
 try:
-    fondo_hospital = pygame.image.load("assets/Hospital.png")
+    fondo_hospital = pygame.image.load("assets/Hospitalito (1).png")  # <-- ajustado
     fondo_hospital = pygame.transform.scale(fondo_hospital, (ANCHO, ALTO))
 except Exception:
-    fondo_hospital = None  # Usaremos color de fondo si no existe la imagen
+    fondo_hospital = None
 
 # Diccionario de imágenes por especie y estado
 imagenes_mascotas = {
@@ -139,25 +141,23 @@ def pantalla_hospital():
                     continue
 
                 if boton_curar.collidepoint(evento.pos):
-                    # Curar en backend: debe quitar el estado "enfermo" sin reiniciar el juego
                     try:
                         curar_en_hospital()
                     except Exception:
                         pass
-                    # Mostrar popup de confirmación y quedarse en Hospital
                     mostrar_popup_cura = True
 
                 elif boton_volver.collidepoint(evento.pos):
-                    # Volver a Casa sin reiniciar
-                    mostrar_pantalla_casa(campo.mascota)
+                    from frontend.pantallaCasa import mostrar_pantalla_casa
+                    mostrar_pantalla_casa(getattr(hospital, "mascota", None))
                     return
 
                 elif boton_liberar.collidepoint(evento.pos):
-                    # Preparar liberación en backend y abrir pantalla de liberación
                     try:
                         preparar_liberacion()
                     except Exception:
                         pass
+                    from frontend.pantallaLiberacion import pantalla_liberacion
                     pantalla_liberacion()
                     return
 
