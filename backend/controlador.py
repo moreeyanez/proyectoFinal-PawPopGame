@@ -1,6 +1,7 @@
 from backend.jugador import Jugador
 from backend.espacio import Campo, Hospital, Libertad
 
+
 # Instancias globales
 campo = Campo()
 hospital = Hospital()
@@ -77,14 +78,19 @@ def preparar_liberacion():
 
 def confirmar_liberacion():
     if libertad.mascota:
-        libertad.alimentar(libertad.mascota)
-        jugador.mascotas_liberadas.append(hospital.mascota.get_dict())
-        hospital.mascota = None
-        campo.mascota = None
+        # Guardar en historial del jugador
+        jugador.mascotas_liberadas.append(libertad.mascota.get_dict())
+
+        # Mensaje de éxito
+        print(f"{libertad.mascota.ver_nombre()} ha sido liberada. Podés crear una nueva.")
+
+        # Limpiar referencias
         libertad.mascota = None
-        print("Mascota liberada. Podés crear una nueva.")
+        campo.mascota = None
+        hospital.mascota = None
     else:
         print("No hay mascota lista para liberar.")
+
 
 def ver_mascotas_liberadas():
     if jugador:

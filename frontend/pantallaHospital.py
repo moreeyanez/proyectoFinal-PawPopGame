@@ -79,7 +79,7 @@ def pantalla_hospital():
         dibujar_texto("Hospital Veterinario", fuente_titulo, TEXTO, 250, 50)
 
         # Obtener datos seguros de la mascota con fallbacks
-        mascota = getattr(campo, "mascota", None)
+        mascota = getattr(hospital, "mascota", None)
         if mascota is None:
             tipo_mascota = "perro"
             nombre_mascota = "Mascota"
@@ -148,9 +148,18 @@ def pantalla_hospital():
                     mostrar_popup_cura = True
 
                 elif boton_volver.collidepoint(evento.pos):
+                    # Si hay mascota en hospital, devolverla al campo
+                    from backend.controlador import campo, hospital
+                    if hospital.mascota:
+                        campo.mascota = hospital.mascota
+                        hospital.mascota = None
+
+                    # Volver a Casa con la mascota que ahora está en campo
                     from frontend.pantallaCasa import mostrar_pantalla_casa
-                    mostrar_pantalla_casa(getattr(hospital, "mascota", None))
+                    mostrar_pantalla_casa(campo.mascota)
                     return
+
+
 
                 elif boton_liberar.collidepoint(evento.pos):
                     try:
