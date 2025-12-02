@@ -98,14 +98,12 @@ def pantalla_casa():
     # Popup de alerta (control)
     mostrar_popup_enfermo = False
     popup_alpha = 160
-    # Para evitar reabrir el popup automáticamente si el usuario lo cerró
-    popup_cerrado_manual = False
 
     while True:
         # Rectángulos del popup (se recalculan cada iteración)
         caja_popup = pygame.Rect(ANCHO // 2 - 220, ALTO // 2 - 120, 440, 220)
-        boton_hosp = pygame.Rect(caja_popup.x + 40, caja_popup.y + 130, 160, 44)
-        boton_ok = pygame.Rect(caja_popup.x + caja_popup.width - 200, caja_popup.y + 130, 160, 44)
+        # Único botón del popup: Ir al hospital (centrado)
+        boton_hosp = pygame.Rect(caja_popup.x + (caja_popup.width - 160) // 2, caja_popup.y + 130, 160, 44)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -113,23 +111,17 @@ def pantalla_casa():
                 sys.exit()
 
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Si el popup está activo, solo responde a sus botones
+                # Si el popup está activo, solo responde a su botón
                 if mostrar_popup_enfermo:
                     if boton_hosp.collidepoint(event.pos):
-                        # Mover la mascota al hospital en backend y luego navegar
                         from backend.controlador import enviar_al_hospital
                         enviar_al_hospital()
 
                         import frontend.pantallaHospital
                         frontend.pantallaHospital.pantalla_hospital()
                         return
-                    elif boton_ok.collidepoint(event.pos):
-                        # Cerrar popup; la imagen seguirá como "enfermo" por prioridad
-                        mostrar_popup_enfermo = False
-                        popup_cerrado_manual = True
                     # Bloquear otras acciones mientras esté el popup
                     continue
-
 
                 # Acciones principales
                 if botones["alimentar"].collidepoint(event.pos):
@@ -152,7 +144,6 @@ def pantalla_casa():
                     frontend.pantallaHospital.pantalla_hospital()
                     return
 
-
         # --- DIBUJAR ---
         VENTANA.blit(fondo_actual, (0, 0))
 
@@ -174,9 +165,7 @@ def pantalla_casa():
         # Prioridad: enfermo > acción > estado visual
         if estado_visual == "enfermo":
             estado_para_mostrar = "enfermo"
-            # Mostrar popup si no fue cerrado manualmente
-            if not popup_cerrado_manual:
-                mostrar_popup_enfermo = True
+            mostrar_popup_enfermo = True
         elif estado_accion:
             estado_para_mostrar = estado_accion
         else:
@@ -229,17 +218,13 @@ def pantalla_casa():
             VENTANA.blit(titulo, (caja_popup.x + (caja_popup.width - titulo.get_width()) // 2, caja_popup.y + 30))
             VENTANA.blit(msg, (caja_popup.x + (caja_popup.width - msg.get_width()) // 2, caja_popup.y + 80))
 
-            # Botones del popup
-            # Dibujar solo el botón Ir al hospital
+            # Único botón del popup
             pygame.draw.rect(VENTANA, GRIS, boton_hosp, border_radius=8)
-
             txt_hosp = fuente.render("Ir al hospital", True, NEGRO)
             VENTANA.blit(
                 txt_hosp,
-                (boton_hosp.x + (boton_hosp.width - txt_hosp.get_width()) // 2,
-                boton_hosp.y + 8)
-)
-
+                (boton_hosp.x + (boton_hosp.width - txt_hosp.get_width()) // 2, boton_hosp.y + 8)
+            )
 
         pygame.display.flip()
 

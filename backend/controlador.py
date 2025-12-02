@@ -9,6 +9,7 @@ libertad = Libertad()
 jugador = None 
 
 
+
 def crear_jugador(nombre, mail):
     global jugador
     try:
@@ -53,12 +54,15 @@ def jugar_con_mascota():
         print("No hay mascota en el campo.")
         
 def enviar_al_hospital():
+    global hospital, campo
     if campo.mascota:
         campo.curar_mascota(hospital)
     else:
         print("No hay mascota para enviar al hospital.")
 
+
 def curar_en_hospital():
+    global hospital
     if hospital.mascota:
         hospital.curar_mascota()
     else:
