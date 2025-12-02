@@ -230,13 +230,16 @@ def pantalla_casa():
             VENTANA.blit(msg, (caja_popup.x + (caja_popup.width - msg.get_width()) // 2, caja_popup.y + 80))
 
             # Botones del popup
+            # Dibujar solo el botón Ir al hospital
             pygame.draw.rect(VENTANA, GRIS, boton_hosp, border_radius=8)
-            pygame.draw.rect(VENTANA, GRIS, boton_ok, border_radius=8)
 
             txt_hosp = fuente.render("Ir al hospital", True, NEGRO)
-            txt_ok = fuente.render("Entendido", True, NEGRO)
-            VENTANA.blit(txt_hosp, (boton_hosp.x + (boton_hosp.width - txt_hosp.get_width()) // 2, boton_hosp.y + 8))
-            VENTANA.blit(txt_ok, (boton_ok.x + (boton_ok.width - txt_ok.get_width()) // 2, boton_ok.y + 8))
+            VENTANA.blit(
+                txt_hosp,
+                (boton_hosp.x + (boton_hosp.width - txt_hosp.get_width()) // 2,
+                boton_hosp.y + 8)
+)
+
 
         pygame.display.flip()
 

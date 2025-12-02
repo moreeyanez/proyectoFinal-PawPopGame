@@ -1,61 +1,55 @@
 import pygame
-import sys
-from backend.controlador import jugador
+import sys, os
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from backend.controlador import obtener_mascotas_liberadas
 from frontend.pantallaHuevo import pantalla_huevo
-
 
 pygame.init()
 
 ANCHO, ALTO = 800, 600
 VENTANA = pygame.display.set_mode((ANCHO, ALTO))
-pygame.display.set_caption("PawPop - Historial de Mascotas")
+pygame.display.set_caption("PawPop - Historial")
 
-fondo_hospital = pygame.image.load("assets/Hospitalito.png")
-fondo_hospital = pygame.transform.scale(fondo_hospital, (ANCHO, ALTO))
-
-# Colores
-FONDO = (240, 255, 240)
-TEXTO = (50, 80, 30)
-BOTON = (150, 200, 150)
-LINEA = (100, 150, 100)
+FONDO = (240, 230, 200)
+TEXTO = (82, 50, 24)
+VERDE = (156, 138, 97)
 
 fuente_titulo = pygame.font.SysFont("Arial", 40, bold=True)
-fuente_label = pygame.font.SysFont("Arial", 28)
+fuente_tabla = pygame.font.SysFont("Arial", 24)
+fuente_boton = pygame.font.SysFont("Arial", 28)
 
-# Botón volver
-boton_volver = pygame.Rect(325, 500, 150, 50)
+boton_volver = pygame.Rect(325, 520, 150, 40)
 
 def dibujar_texto(texto, fuente, color, x, y):
     superficie = fuente.render(texto, True, color)
-    VENTANA.blit(fondo_hospital, (0, 0))
+    VENTANA.blit(superficie, (x, y))
 
 def pantalla_historial():
     reloj = pygame.time.Clock()
 
+    mascotas = obtener_mascotas_liberadas()  # ✅ usamos backend
+    liberadas = [m for m in mascotas if m.get("estado") == "liberada"]
+
     while True:
         VENTANA.fill(FONDO)
-        dibujar_texto("Historial de Mascotas Liberadas", fuente_titulo, TEXTO, 100, 50)
 
-        # Encabezados de tabla
-        dibujar_texto("Nombre", fuente_label, TEXTO, 200, 120)
-        dibujar_texto("Especie", fuente_label, TEXTO, 450, 120)
+        dibujar_texto("Historial de Mascotas Liberadas", fuente_titulo, TEXTO, 150, 50)
 
-        # Línea separadora
-        pygame.draw.line(VENTANA, LINEA, (180, 150), (620, 150), 2)
+        # Encabezados tabla
+        dibujar_texto("Nombre", fuente_tabla, TEXTO, 200, 150)
+        dibujar_texto("Tipo", fuente_tabla, TEXTO, 450, 150)
 
-        # Mostrar mascotas liberadas en filas
-        if jugador and jugador.mascotas_liberadas:
-            y_offset = 180
-            for m in jugador.mascotas_liberadas:
-                dibujar_texto(m["nombre"], fuente_label, TEXTO, 200, y_offset)
-                dibujar_texto(m["especie"], fuente_label, TEXTO, 450, y_offset)
-                y_offset += 40
-        else:
-            dibujar_texto("No hay mascotas liberadas aún.", fuente_label, TEXTO, 200, 200)
+        # Filas
+        y = 190
+        for m in liberadas:
+            dibujar_texto(m["nombre"], fuente_tabla, TEXTO, 200, y)
+            dibujar_texto(m["tipo"], fuente_tabla, TEXTO, 450, y)
+            y += 40
 
         # Botón volver
-        pygame.draw.rect(VENTANA, BOTON, boton_volver)
-        dibujar_texto("Volver", fuente_label, TEXTO, boton_volver.x + 40, boton_volver.y + 10)
+        pygame.draw.rect(VENTANA, VERDE, boton_volver, border_radius=8)
+        pygame.draw.rect(VENTANA, TEXTO, boton_volver, 2, border_radius=8)
+        dibujar_texto("Volver", fuente_boton, TEXTO, boton_volver.x + 30, boton_volver.y + 5)
 
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
@@ -64,7 +58,7 @@ def pantalla_historial():
 
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if boton_volver.collidepoint(evento.pos):
-                    pantalla_huevo()  # volver a pantalla huevo
+                    pantalla_huevo()
                     return
 
         pygame.display.flip()

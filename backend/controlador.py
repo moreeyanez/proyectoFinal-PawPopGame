@@ -98,6 +98,12 @@ def ver_mascotas_liberadas():
     else:
         print("No hay jugador creado.")
 
+def obtener_mascotas_liberadas():
+    if jugador:
+        return jugador.mascotas_liberadas
+    return []
+
+
 def salir_del_juego():
     if jugador:
         libertad.eliminar(jugador)
