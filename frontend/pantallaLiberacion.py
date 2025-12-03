@@ -3,6 +3,7 @@ import sys
 import os
 from backend.controlador import confirmar_liberacion, ver_mascotas_liberadas, salir_del_juego
 from frontend.pantallaHuevo import pantalla_huevo
+from backend.controlador import confirmar_liberacion, ver_mascotas_liberadas, salir_del_juego, obtener_mascotas_liberadas
 
 pygame.init()
 
@@ -45,9 +46,13 @@ def pantalla_liberacion():
 
         # Mostrar historial de mascotas liberadas
         dibujar_texto("Mascotas liberadas:", fuente_label, TEXTO, 80, 200)
-        if "primera_vez" not in locals():
-            ver_mascotas_liberadas()
-            primera_vez = True  # imprime en consola
+
+        mascotas = obtener_mascotas_liberadas()
+        y_offset = 250
+        for m in mascotas:
+            texto = f"- {m['nombre']} ({m['especie']})"
+            dibujar_texto(texto, fuente_label, TEXTO, 100, y_offset)
+            y_offset += 30
         # (Opcional: podríamos capturar el historial y dibujarlo en pantalla)
 
         for evento in pygame.event.get():
