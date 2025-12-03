@@ -56,11 +56,14 @@ def pantalla_liberacion():
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if boton_liberar.collidepoint(evento.pos):
                     confirmar_liberacion()
+                    pantalla_huevo()
+                    return
                 elif boton_nueva.collidepoint(evento.pos):
                     pantalla_huevo("Mascota")  # vuelve al flujo de creación
                     return
                 elif boton_salir.collidepoint(evento.pos):
                     salir_del_juego()
+                    return
 
         pygame.display.flip()
         reloj.tick(30)
