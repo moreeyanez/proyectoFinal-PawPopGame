@@ -120,7 +120,10 @@ def pantalla_hospital():
         pygame.draw.rect(VENTANA, BOTON, boton_liberar, border_radius=8)
         dibujar_texto("Curar", fuente_label, TEXTO, boton_curar.x + 40, boton_curar.y + 10)
         dibujar_texto("Volver", fuente_label, TEXTO, boton_volver.x + 40, boton_volver.y + 10)
-        dibujar_texto("Liberar", fuente_label, TEXTO, boton_liberar.x + 30, boton_liberar.y + 10)
+        if estado_visual != "enfermo":
+            pygame.draw.rect(VENTANA, BOTON, boton_liberar, border_radius=8)
+            dibujar_texto("Liberar", fuente_label, TEXTO,
+                        boton_liberar.x + 30, boton_liberar.y + 10)
 
         # Eventos
         for evento in pygame.event.get():
@@ -164,6 +167,9 @@ def pantalla_hospital():
 
 
                 elif boton_liberar.collidepoint(evento.pos):
+                    if estado_visual == "enfermo":
+                        # No hacer nada – botón invisible/inactivo
+                        continue
                     try:
                         preparar_liberacion()
                     except Exception:
