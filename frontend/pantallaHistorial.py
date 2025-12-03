@@ -43,7 +43,7 @@ def pantalla_historial():
         y = 190
         for m in liberadas:
             dibujar_texto(m["nombre"], fuente_tabla, TEXTO, 200, y)
-            dibujar_texto(m["tipo"], fuente_tabla, TEXTO, 450, y)
+            dibujar_texto(m["especie"], fuente_tabla, TEXTO, 450, y)
             y += 40
 
         # Botón volver

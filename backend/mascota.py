@@ -134,7 +134,8 @@ class Mascota:
             "comida": self.comida,
             "energia": self.ver_energia(),
             "alimentacion": self.ver_alimentacion(),
-            "enfermo": self.enfermo
+            "enfermo": self.enfermo,
+            "estado": "liberada"
         }
 
     def obtener_estado_visual(self):
