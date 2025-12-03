@@ -116,10 +116,11 @@ def pantalla_casa():
                     if boton_hosp.collidepoint(event.pos):
                         from backend.controlador import enviar_al_hospital
                         enviar_al_hospital()
-
                         import frontend.pantallaHospital
                         frontend.pantallaHospital.pantalla_hospital()
                         return
+
+
                     # Bloquear otras acciones mientras esté el popup
                     continue
 
@@ -143,6 +144,7 @@ def pantalla_casa():
                     import frontend.pantallaHospital
                     frontend.pantallaHospital.pantalla_hospital()
                     return
+
 
         # --- DIBUJAR ---
         VENTANA.blit(fondo_actual, (0, 0))

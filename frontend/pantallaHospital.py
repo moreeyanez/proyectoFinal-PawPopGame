@@ -3,8 +3,7 @@ import sys
 from backend.controlador import campo, curar_en_hospital, preparar_liberacion
 from frontend.pantallaCasa import mostrar_pantalla_casa
 from frontend.pantallaLiberacion import pantalla_liberacion
-from backend.controlador import hospital, curar_en_hospital, preparar_liberacion
-
+from backend.controlador import hospital, curar_en_hospital, preparar_liberacion, campo 
 
 pygame.init()
 
@@ -31,7 +30,7 @@ boton_liberar = pygame.Rect(500, 500, 150, 50)
 
 # Fondo hospital (asegúrate de que el archivo exista en assets/Hospital.png)
 try:
-    fondo_hospital = pygame.image.load("assets/Hospitalito (1).png")  # <-- ajustado
+    fondo_hospital = pygame.image.load("assets/Hospitalito (1).png")
     fondo_hospital = pygame.transform.scale(fondo_hospital, (ANCHO, ALTO))
 except Exception:
     fondo_hospital = None
@@ -130,35 +129,38 @@ def pantalla_hospital():
                 sys.exit()
 
             if evento.type == pygame.MOUSEBUTTONDOWN:
-                # Si el popup está activo, podríamos ignorar clicks fuera. Aquí permitimos cerrar con botón.
                 if mostrar_popup_cura:
-                    # Definimos botón "Aceptar" del popup para cerrar
+                    # Botón "Aceptar" del popup para cerrar
                     caja_popup = pygame.Rect(ANCHO // 2 - 220, ALTO // 2 - 100, 440, 200)
-                    boton_aceptar = pygame.Rect(caja_popup.x + (caja_popup.width - 140) // 2, caja_popup.y + 120, 140, 40)
+                    boton_aceptar = pygame.Rect(caja_popup.x + (caja_popup.width - 140) // 2,
+                                                caja_popup.y + 120, 140, 40)
                     if boton_aceptar.collidepoint(evento.pos):
                         mostrar_popup_cura = False
-                    # No continuar (no procesar otros botones mientras el popup esté activo)
                     continue
 
                 if boton_curar.collidepoint(evento.pos):
                     try:
-                        curar_en_hospital()
-                    except Exception:
-                        pass
-                    mostrar_popup_cura = True
+                        resultado = curar_en_hospital()
+                    except Exception as e:
+                        print(f"[frontend] Error al curar: {e}")
+                        resultado = {"ok": False}
+
+                    if resultado.get("ok"):
+                        print(f"[frontend] Curación OK: energía={resultado.get('energia')}, estado={resultado.get('estado')}")
+                        mostrar_popup_cura = True
+                    else:
+                        print(f"[frontend] Curación fallida: {resultado.get('msg')}")
+                        mostrar_popup_cura = True
+
+
 
                 elif boton_volver.collidepoint(evento.pos):
-                    # Si hay mascota en hospital, devolverla al campo
-                    from backend.controlador import campo, hospital
+                    # Transferir mascota del hospital al campo
                     if hospital.mascota:
                         campo.mascota = hospital.mascota
                         hospital.mascota = None
-
-                    # Volver a Casa con la mascota que ahora está en campo
-                    from frontend.pantallaCasa import mostrar_pantalla_casa
                     mostrar_pantalla_casa(campo.mascota)
                     return
-
 
 
                 elif boton_liberar.collidepoint(evento.pos):
@@ -166,11 +168,10 @@ def pantalla_hospital():
                         preparar_liberacion()
                     except Exception:
                         pass
-                    from frontend.pantallaLiberacion import pantalla_liberacion
                     pantalla_liberacion()
                     return
 
-        # Popup de curación (overlay + caja + botón Aceptar)
+        # Popup de curación
         if mostrar_popup_cura:
             overlay = pygame.Surface((ANCHO, ALTO))
             overlay.set_alpha(alpha_overlay)
@@ -188,9 +189,11 @@ def pantalla_hospital():
                  caja_popup.y + 40)
             )
 
-            boton_aceptar = pygame.Rect(caja_popup.x + (caja_popup.width - 140) // 2, caja_popup.y + 120, 140, 40)
+            boton_aceptar = pygame.Rect(caja_popup.x + (caja_popup.width - 140) // 2,
+                                        caja_popup.y + 120, 140, 40)
             pygame.draw.rect(VENTANA, BOTON, boton_aceptar, border_radius=8)
-            dibujar_texto("Aceptar", fuente_label, TEXTO, boton_aceptar.x + 30, boton_aceptar.y + 8)
+            dibujar_texto("Aceptar", fuente_label, TEXTO,
+                          boton_aceptar.x + 30, boton_aceptar.y + 8)
 
         pygame.display.flip()
         reloj.tick(30)
