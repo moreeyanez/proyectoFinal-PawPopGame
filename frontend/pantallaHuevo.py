@@ -46,6 +46,9 @@ for i, especie in enumerate(especies):
 # BOTÓN HISTORIAL
 boton_historial = pygame.Rect(325, 520, 150, 40)
 
+# BOTÓN SALIR
+boton_salir = pygame.Rect(50, 520, 100, 40)
+
 # FUNCIONES
 def dibujar_texto(texto, fuente, color, x, y):
     superficie = fuente.render(texto, True, color)
@@ -88,6 +91,11 @@ def pantalla_huevo():
         pygame.draw.rect(VENTANA, TEXTO, boton_historial, 2, border_radius=8)
         dibujar_texto("Historial", fuente_boton, TEXTO,
                       boton_historial.x + 25, boton_historial.y + 10)
+        
+        # Botón salir
+        pygame.draw.rect(VENTANA, VERDE, boton_salir, border_radius=8)
+        pygame.draw.rect(VENTANA, TEXTO, boton_salir, 2, border_radius=8)
+        dibujar_texto("Salir", fuente_boton, TEXTO, boton_salir.x + 20, boton_salir.y + 8)
 
         # Eventos
         for evento in pygame.event.get():
@@ -112,6 +120,11 @@ def pantalla_huevo():
                         return
                     except Exception as e:
                         print("Error al abrir historial:", e)
+                        
+                if boton_salir.collidepoint(evento.pos):
+                    pygame.quit()
+                    sys.exit()
+
 
         pygame.display.flip()
         reloj.tick(30)
