@@ -122,17 +122,11 @@ def curar_en_hospital():
         return {"ok": False, "msg": "No hay mascota en hospital"}
 
     m = hospital.mascota
-    energia_antes = _leer_energia_seguro(m)
-    _apagar_enfermedad_seguro(m)
-    nueva_energia = min(100, int(energia_antes) + 30)
-
-    if not _set_energia_seguro(m, nueva_energia):
-        print("[backend] No pude establecer energía: no hay setter ni atributo conocido.")
-        return {"ok": False, "msg": "No se pudo ajustar energía"}
+    m.curar()  # 🔧 Esto restaura energía=80 y alimentación=80 y apaga enfermo
 
     estado = m.obtener_estado_visual() if hasattr(m, "obtener_estado_visual") else "feliz"
-    print(f"[backend] Mascota curada en hospital: energía {energia_antes} -> {nueva_energia}, estado={estado}")
-    return {"ok": True, "energia": nueva_energia, "estado": estado}
+    print(f"[backend] Mascota curada en hospital: energía=80, alimentación=80, estado={estado}")
+    return {"ok": True, "energia": 80, "alimentacion": 80, "estado": estado}
 
 # ---------------------
 # Estado y liberación
