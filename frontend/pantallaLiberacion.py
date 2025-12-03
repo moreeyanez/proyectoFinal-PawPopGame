@@ -45,7 +45,9 @@ def pantalla_liberacion():
 
         # Mostrar historial de mascotas liberadas
         dibujar_texto("Mascotas liberadas:", fuente_label, TEXTO, 80, 200)
-        ver_mascotas_liberadas()  # imprime en consola
+        if "primera_vez" not in locals():
+            ver_mascotas_liberadas()
+            primera_vez = True  # imprime en consola
         # (Opcional: podríamos capturar el historial y dibujarlo en pantalla)
 
         for evento in pygame.event.get():
