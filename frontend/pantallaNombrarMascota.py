@@ -1,3 +1,22 @@
+"""
+Pantalla de nombramiento de mascota del juego PawPop.
+
+Este módulo muestra la interfaz donde el jugador ingresa el nombre de la mascota
+recién creada. Recibe la especie seleccionada previamente en `pantallaHuevo` y
+permite completar el proceso de creación de la mascota.
+
+Características principales:
+- Campo de texto interactivo para ingresar el nombre.
+- Botón para confirmar y avanzar.
+- Integración con el backend para crear la mascota mediante `crear_mascota()`.
+- Transición automática hacia la pantalla de la casa (`mostrar_pantalla_casa`)
+una vez asignado el nombre.
+
+Funciones principales:
+- `pantalla_nombrar_mascota(especie)`: Ejecuta el loop de la pantalla,
+renderiza los elementos gráficos e interpreta las acciones del jugador.
+"""
+
 import pygame
 import sys
 from backend.controlador import crear_mascota, campo
@@ -29,13 +48,49 @@ rect_input = pygame.Rect(250, 300, 300, 40)
 rect_siguiente = pygame.Rect(325, 400, 150, 50)
 
 def dibujar_texto(texto, fuente, color, x, y):
+    """
+    Dibuja texto en la ventana del juego.
+
+    Parámetros:
+    texto : str
+        Cadena que se mostrará en pantalla.
+    fuente : pygame.font.Font
+        Fuente usada para renderizar el texto.
+    color : tuple[int, int, int]
+        Color RGB del texto.
+    x : int
+        Posición horizontal donde se dibujará el texto.
+    y : int
+        Posición vertical donde se dibujará el texto.
+    """
     superficie = fuente.render(texto, True, color)
     VENTANA.blit(superficie, (x, y))
 
 def pantalla_nombrar_mascota(especie):
     """
-    Recibe la especie elegida en pantallaHuevo.
-    El jugador escribe el nombre de la mascota y se crea en el backend.
+    Muestra la pantalla donde el jugador escribe el nombre de su mascota.
+
+    Parámetros
+    especie : str
+        La especie seleccionada previamente en pantallaHuevo (por ejemplo,
+        "Perro", "Gato", etc.). Se utiliza para crear la mascota en el backend.
+
+    Descripción:
+    La pantalla contiene un campo de texto interactivo donde el jugador
+    puede escribir el nombre de su mascota. Cuando se presiona el botón
+    "Siguiente" y el nombre no está vacío:
+
+    - Se llama a `crear_mascota(nombre, especie)` en el backend.
+    - La mascota creada se obtiene desde `campo.mascota`.
+    - Se redirige al jugador a la pantalla principal del hogar mediante
+      `mostrar_pantalla_casa(mascota)`.
+
+    El loop de la pantalla gestiona:
+    - Eventos de teclado para escribir o borrar texto.
+    - Detección de clics para activar el input o confirmar el nombre.
+    - Renderizado continuo del fondo, textos, botón e input.
+
+    Esta función solo se cierra cuando una mascota válida es creada y se pasa a la siguiente pantalla.
     """
     global nombre, activo, color_input
     reloj = pygame.time.Clock()
@@ -60,11 +115,9 @@ def pantalla_nombrar_mascota(especie):
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 activo = rect_input.collidepoint(evento.pos)
                 if rect_siguiente.collidepoint(evento.pos) and nombre:
-                    # Crear mascota en backend con nombre definitivo
                     crear_mascota(nombre, especie)
                     mascota = campo.mascota
 
-                    # Pasar a pantalla Casa
                     mostrar_pantalla_casa(mascota)
                     return
 
@@ -79,6 +132,5 @@ def pantalla_nombrar_mascota(especie):
         reloj.tick(30)
 
 if __name__ == "__main__":
-    # Para pruebas rápidas
     pantalla_nombrar_mascota("Perro")
 

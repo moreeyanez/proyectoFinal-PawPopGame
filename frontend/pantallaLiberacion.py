@@ -1,3 +1,28 @@
+"""
+Módulo de la pantalla de liberación del juego PawPop.
+
+Esta pantalla aparece cuando la mascota del jugador ha completado su ciclo y está
+lista para ser liberada. El objetivo principal es permitir al usuario decidir entre:
+
+- Liberar definitivamente la mascota y registrarla en el historial.
+- Comenzar una nueva mascota desde el huevo.
+- Salir del juego.
+
+Además, la pantalla muestra un listado de todas las mascotas liberadas previamente,
+utilizando la información almacenada por el backend.
+
+Funciones principales:
+- pantalla_liberacion(): administra el loop principal de la pantalla, la interacción
+  con los botones y la actualización visual.
+- dibujar_texto(): función auxiliar para renderizar texto en pantalla.
+
+Dependencias importantes:
+- confirmar_liberacion(): registra una nueva liberación en el backend.
+- obtener_mascotas_liberadas(): devuelve el historial de mascotas.
+- pantalla_huevo(): permite comenzar la creación de una nueva mascota.
+- salir_del_juego(): cierra el juego correctamente.
+"""
+
 import pygame
 import sys
 import os
@@ -25,10 +50,41 @@ boton_nueva = pygame.Rect(325, 450, 150, 50)
 boton_salir = pygame.Rect(500, 450, 150, 50)
 
 def dibujar_texto(texto, fuente, color, x, y):
+    """
+    Dibuja texto en la ventana del juego.
+
+    Parámetros:
+    texto : str
+        Cadena que se mostrará en pantalla.
+    fuente : pygame.font.Font
+        Fuente usada para renderizar el texto.
+    color : tuple[int, int, int]
+        Color RGB del texto.
+    x : int
+        Posición horizontal donde se dibujará el texto.
+    y : int
+        Posición vertical donde se dibujará el texto.
+    """
     superficie = fuente.render(texto, True, color)
     VENTANA.blit(superficie, (x, y))
 
 def pantalla_liberacion():
+    """
+    Ejecuta la pantalla de liberación de la mascota.
+
+    Esta función controla el loop principal de la pantalla, incluyendo:
+    - Renderizado del mensaje principal.
+    - Dibujado de botones de interacción.
+    - Visualización del historial de mascotas liberadas.
+    - Manejo de eventos de clic para liberar la mascota, crear una nueva o salir.
+
+    Flujo de opciones:
+    - "Liberar": llama a `confirmar_liberacion()` y vuelve a pantalla_huevo().
+    - "Nueva Mascota": reinicia el proceso creando un nuevo huevo.
+    - "Salir": ejecuta `salir_del_juego()`.
+
+    El loop continúa hasta que el usuario selecciona alguna acción válida.
+    """
     reloj = pygame.time.Clock()
 
     while True:
