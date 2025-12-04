@@ -21,6 +21,8 @@ import pygame
 import sys
 from backend.controlador import crear_mascota, campo
 from frontend.pantallaCasa import mostrar_pantalla_casa
+from frontend.pantallaHuevo import pantalla_huevo
+
 
 pygame.init()
 
@@ -46,6 +48,8 @@ activo = False
 color_input = MARRON
 rect_input = pygame.Rect(250, 300, 300, 40)
 rect_siguiente = pygame.Rect(325, 400, 150, 50)
+rect_volver = pygame.Rect(50, 500, 120, 40)
+
 
 def dibujar_texto(texto, fuente, color, x, y):
     """
@@ -107,18 +111,30 @@ def pantalla_nombrar_mascota(especie):
         pygame.draw.rect(VENTANA, VERDE, rect_siguiente)
         dibujar_texto("Siguiente", fuente_label, TEXTO, rect_siguiente.x + 25, rect_siguiente.y + 10)
 
+        # Botón volver
+        pygame.draw.rect(VENTANA, VERDE, rect_volver)
+        texto_volver = fuente_label.render("Volver", True, TEXTO)
+        texto_volver_rect = texto_volver.get_rect(center=rect_volver.center)
+        VENTANA.blit(texto_volver, texto_volver_rect)
+
+
         for evento in pygame.event.get():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
 
             if evento.type == pygame.MOUSEBUTTONDOWN:
+                # acá sí existe evento.pos
                 activo = rect_input.collidepoint(evento.pos)
                 if rect_siguiente.collidepoint(evento.pos) and nombre:
                     crear_mascota(nombre, especie)
                     mascota = campo.mascota
-
                     mostrar_pantalla_casa(mascota)
+                    return
+
+                if rect_volver.collidepoint(evento.pos):
+                    from frontend.pantallaHuevo import pantalla_huevo
+                    pantalla_huevo()
                     return
 
             if evento.type == pygame.KEYDOWN and activo:
@@ -126,6 +142,7 @@ def pantalla_nombrar_mascota(especie):
                     nombre = nombre[:-1]
                 else:
                     nombre += evento.unicode
+
 
         color_input = CELESTE if activo else MARRON
         pygame.display.flip()

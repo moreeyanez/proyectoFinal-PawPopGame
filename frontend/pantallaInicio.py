@@ -281,7 +281,7 @@ def pantalla_inicio():
                 activo_mail   = rect_mail.collidepoint(evento.pos)
                 if rect_ingresar.collidepoint(evento.pos):
                     if nombre and mail:
-                        emoji_actual = emoji_sorpresa()  # emoji sorpresa al click
+                        emoji_actual = emoji_sorpresa() 
                         try:
                             crear_jugador(nombre, mail)
                             pantalla_huevo()
@@ -294,13 +294,13 @@ def pantalla_inicio():
                         nombre = nombre[:-1]
                     else:
                         nombre += evento.unicode
-                        emoji_actual = emoji_sorpresa()  # emoji sorpresa al escribir
+                        emoji_actual = emoji_sorpresa() 
                 elif activo_mail:
                     if evento.key == pygame.K_BACKSPACE:
                         mail = mail[:-1]
                     else:
                         mail += evento.unicode
-                        emoji_actual = emoji_sorpresa()  # emoji sorpresa al escribir
+                        emoji_actual = emoji_sorpresa() 
 
         color_nombre = CELESTE if activo_nombre else MARRON
         color_mail   = CELESTE if activo_mail   else MARRON
