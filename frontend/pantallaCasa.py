@@ -71,7 +71,7 @@ def pantalla_casa():
     """
 
     # Fondos
-    fondo_dia = pygame.image.load("assets/InterioCasita.png")
+    fondo_dia = pygame.image.load("assets/Casita ParteAdentro.png")
     fondo_dia = pygame.transform.scale(fondo_dia, (ANCHO, ALTO))
     fondo_noche = pygame.image.load("assets/campitoNoche.png")
     fondo_noche = pygame.transform.scale(fondo_noche, (ANCHO, ALTO))
