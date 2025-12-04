@@ -1,3 +1,23 @@
+"""
+Pantalla del huevo del juego PawPop.
+
+En esta pantalla el jugador interactúa con su huevo inicial, donde comienza la
+experiencia principal del juego. Aquí pueden mostrarse animaciones, efectos,
+interacciones y acciones que preparan al jugador para la etapa de crianza
+del personaje.
+
+Funcionalidades típicas de esta pantalla incluyen:
+
+- Mostrar el huevo con animación o estados.
+- Detectar clics o acciones del jugador.
+- Reproducir efectos visuales.
+- Controlar el avance hacia la siguiente etapa del juego.
+
+La función principal del módulo es `pantalla_huevo()`, la cual administra el
+loop de renderizado y eventos mientras esta pantalla está activa.
+"""
+
+
 import pygame
 import sys
 import os
