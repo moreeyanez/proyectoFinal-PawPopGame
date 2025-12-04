@@ -17,7 +17,6 @@ La función principal del módulo es `pantalla_huevo()`, la cual administra el
 loop de renderizado y eventos mientras esta pantalla está activa.
 """
 
-
 import pygame
 import sys
 import os
@@ -133,13 +132,16 @@ def pantalla_huevo():
         # Botón historial
         pygame.draw.rect(VENTANA, VERDE, boton_historial, border_radius=8)
         pygame.draw.rect(VENTANA, TEXTO, boton_historial, 2, border_radius=8)
-        dibujar_texto("Historial", fuente_boton, TEXTO,
-                      boton_historial.x + 25, boton_historial.y + 10)
+        texto_historial = fuente_boton.render("Historial", True, TEXTO)
+        texto_historial_rect = texto_historial.get_rect(center=boton_historial.center)
+        VENTANA.blit(texto_historial, texto_historial_rect)
         
         # Botón salir
         pygame.draw.rect(VENTANA, VERDE, boton_salir, border_radius=8)
         pygame.draw.rect(VENTANA, TEXTO, boton_salir, 2, border_radius=8)
-        dibujar_texto("Salir", fuente_boton, TEXTO, boton_salir.x + 20, boton_salir.y + 8)
+        texto_salir = fuente_boton.render("Salir", True, TEXTO)
+        texto_salir_rect = texto_salir.get_rect(center=boton_salir.center)
+        VENTANA.blit(texto_salir, texto_salir_rect)
 
         # Eventos
         for evento in pygame.event.get():
