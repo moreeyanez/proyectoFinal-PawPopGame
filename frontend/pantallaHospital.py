@@ -22,6 +22,7 @@ from backend.controlador import hospital, curar_en_hospital, preparar_liberacion
 
 pygame.init()
 
+# Dimensiones de la ventana principal
 ANCHO, ALTO = 800, 600
 VENTANA = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("PawPop - Hospital")
@@ -37,19 +38,19 @@ OVERLAY = (0, 0, 0)
 fuente_titulo = pygame.font.SysFont("Arial", 40, bold=True)
 fuente_label = pygame.font.SysFont("Arial", 28)
 
-
+# Botones de la pantalla
 boton_curar = pygame.Rect(150, 500, 150, 50)
 boton_volver = pygame.Rect(325, 500, 150, 50)
 boton_liberar = pygame.Rect(500, 500, 150, 50)
 
-
+#Fondo del hospital
 try:
     fondo_hospital = pygame.image.load("assets/Hospitalito (1).png")
     fondo_hospital = pygame.transform.scale(fondo_hospital, (ANCHO, ALTO))
 except Exception:
     fondo_hospital = None
 
-
+# Diccionario de imágenes de mascotas según especie y estado
 imagenes_mascotas = {
     "perro": {
         "enfermo": "assets/Mascotas/mascotaTriste/Perrito triste.png",
@@ -74,10 +75,36 @@ imagenes_mascotas = {
 }
 
 def dibujar_texto(texto, fuente, color, x, y):
+    """
+    Renderiza y dibuja un texto en la ventana principal del juego.
+    
+    - param texto: Texto a renderizar.
+    - param fuente: Fuente utilizada para el texto.
+    - param color: Color del texto.
+    - param x: Coordenada x para dibujar el texto.
+    - param y: Coordenada y para dibujar el texto.
+
+    """
     superficie = fuente.render(texto, True, color)
     VENTANA.blit(superficie, (x, y))
 
 def pantalla_hospital():
+    """
+    Muestra la pantalla principal del hospital veterinario en el juego.
+
+    Esta función gestiona el bucle principal de la pantalla del hospital, incluyendo:
+      
+      - Renderizado del fondo y elementos gráficos.
+      - Visualización de la mascota (enferma o feliz).
+      - Botones interactivos: "Curar", "Volver" y "Liberar".
+      - Eventos de usuario (clics, cierre de ventana).
+      - Integración con backend para curar mascotas y preparar liberación.
+      - Popups de confirmación tras acciones exitosas.
+
+    El flujo se mantiene en un bucle infinito hasta que el jugador
+    decida volver a la pantalla de casa o liberar la mascota.
+
+    """
     reloj = pygame.time.Clock()
     mostrar_popup_cura = False  
     alpha_overlay = 140
@@ -91,7 +118,7 @@ def pantalla_hospital():
 
         dibujar_texto("Hospital Veterinario", fuente_titulo, TEXTO, 250, 50)
 
-        
+        # Obtener datos de la mascota ingresada al hospital
         mascota = getattr(hospital, "mascota", None)
         if mascota is None:
             tipo_mascota = "perro"
@@ -109,7 +136,7 @@ def pantalla_hospital():
        
         estado_mostrar = "enfermo" if estado_visual == "enfermo" else "feliz"
 
-       
+       # Cargar y mostrar imagen de la mascota
         try:
             ruta = imagenes_mascotas[tipo_mascota][estado_mostrar]
             img_mascota = pygame.image.load(ruta)
@@ -120,7 +147,7 @@ def pantalla_hospital():
             rect.fill((200, 100, 100))
             VENTANA.blit(rect, (ANCHO // 2 - 100, 200))
 
-      
+        # Estadísticas y nombre de la mascota
         texto_nombre = fuente_label.render(nombre_mascota, True, NEGRO)
         VENTANA.blit(texto_nombre, (ANCHO // 2 - texto_nombre.get_width() // 2, 420))
         texto_energia = fuente_label.render(f"Energía: {energia}%", True, NEGRO)
@@ -128,7 +155,7 @@ def pantalla_hospital():
         VENTANA.blit(texto_energia, (50, 30))
         VENTANA.blit(texto_alimento, (50, 70))
 
-      
+        # Botones
         pygame.draw.rect(VENTANA, BOTON, boton_curar, border_radius=8)
         pygame.draw.rect(VENTANA, BOTON, boton_volver, border_radius=8)
         pygame.draw.rect(VENTANA, BOTON, boton_liberar, border_radius=8)
@@ -144,17 +171,16 @@ def pantalla_hospital():
             if evento.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
             if evento.type == pygame.MOUSEBUTTONDOWN:
                 if mostrar_popup_cura:
-              
                     caja_popup = pygame.Rect(ANCHO // 2 - 220, ALTO // 2 - 100, 440, 200)
                     boton_aceptar = pygame.Rect(caja_popup.x + (caja_popup.width - 140) // 2,
                                                 caja_popup.y + 120, 140, 40)
                     if boton_aceptar.collidepoint(evento.pos):
                         mostrar_popup_cura = False
                     continue
-
+                
+                # Curar mascota
                 if boton_curar.collidepoint(evento.pos):
                     try:
                         resultado = curar_en_hospital()
@@ -170,7 +196,7 @@ def pantalla_hospital():
                         mostrar_popup_cura = True
 
 
-
+                # Volver a la casa
                 elif boton_volver.collidepoint(evento.pos):
                 
                     if hospital.mascota:
@@ -179,7 +205,7 @@ def pantalla_hospital():
                     mostrar_pantalla_casa(campo.mascota)
                     return
 
-
+                # Liberar mascota si está sana
                 elif boton_liberar.collidepoint(evento.pos):
                     if estado_visual == "enfermo":
                    
@@ -191,7 +217,7 @@ def pantalla_hospital():
                     pantalla_liberacion()
                     return
 
-  
+        # Mostrar popup de curación exitosa
         if mostrar_popup_cura:
             overlay = pygame.Surface((ANCHO, ALTO))
             overlay.set_alpha(alpha_overlay)
