@@ -7,21 +7,21 @@ from backend.controlador import crear_mascota
 
 pygame.init()
 
-# VENTANA
+# Ventana
 ANCHO, ALTO = 800, 600
 VENTANA = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("PawPop - Elegí tu mascota")
 
-# COLORES
+# Colores
 FONDO = (255, 248, 226)
 VERDE = (156, 138, 97)
 TEXTO = (82, 50, 24)
 
-# FUENTES
+# Tipografías
 fuente_titulo = pygame.font.SysFont("Arial", 48, bold=True)
 fuente_boton = pygame.font.SysFont("Arial", 24)
 
-# IMAGEN HUEVITO
+# Cargar imagen del huevo
 BASE = os.path.dirname(os.path.abspath(__file__)) 
 ruta_huevito = os.path.join(BASE, "..", "assets", "Huevito.png")
 
@@ -32,7 +32,7 @@ except pygame.error as e:
     print("No se pudo cargar la imagen del huevo:", e)
     imagen_huevito = None
 
-# BOTONES DE ESPECIES
+# Botones de especies
 botones = []
 especies = ["Perro", "Gato", "Vaca", "Capibara", "Conejo"]
 espaciado = 120
@@ -43,25 +43,49 @@ for i, especie in enumerate(especies):
     boton = pygame.Rect(x, 450, 100, 40)
     botones.append((boton, especie))
 
-# BOTÓN HISTORIAL
+# Botón historial
 boton_historial = pygame.Rect(325, 520, 150, 40)
 
-# BOTÓN SALIR
+# Botón salir
 boton_salir = pygame.Rect(50, 520, 100, 40)
 
-# FUNCIONES
+
 def dibujar_texto(texto, fuente, color, x, y):
+    '''
+    Renderiza y dibuja un texto en la ventana principal del juego.
+    Parámetros:
+
+    - texto: Cadena de texto a renderizar.
+    - fuente: Objeto de fuente de Pygame.
+    - color: Tupla RGB del color del texto.
+    - x, y: Coordenadas donde se dibujará el texto.
+    '''
+
     superficie = fuente.render(texto, True, color)
     VENTANA.blit(superficie, (x, y))
 
 def animar_huevito(tiempo):
+    '''
+    Realiza la animación del huevito aplicando un movimiento oscilatorio horizontal.
+    La función únicamente dibuja el huevo animado en la ventana.
+    '''
+
     if imagen_huevito:
-        # Rebote horizontal con seno
         offset_x = int(10 * math.sin(tiempo * 0.005))
         huevo = imagen_huevito.copy()
         VENTANA.blit(huevo, (ANCHO // 2 - 100 + offset_x, 150))
 
 def pantalla_huevo():
+    '''
+     Pantalla principal donde el usuario elige la especie de su mascota.
+
+    Esta función administra:
+    - El renderizado del título y del huevito animado.
+    - La creación y visualización de botones de especies.
+    - El acceso al historial de mascotas.
+    - El botón para salir del juego.
+    - La detección de eventos del mouse y navegación a otras pantallas.
+    '''
     reloj = pygame.time.Clock()
 
     while True:
