@@ -132,10 +132,10 @@ def pantalla_casa():
 
     # Botones de interacción
     botones = {
-        "alimentar": pygame.Rect(100, 500, 120, 50),
-        "jugar": pygame.Rect(250, 500, 120, 50),
-        "dormir": pygame.Rect(400, 500, 120, 50),
-        "curar": pygame.Rect(550, 500, 120, 50)
+        "alimentar": pygame.Rect(200, 500, 120, 50),
+        "jugar": pygame.Rect(350, 500, 120, 50),
+        "dormir": pygame.Rect(500, 500, 120, 50),
+        #"curar": pygame.Rect(550, 500, 120, 50)
     }
 
     def dibujar_boton(rect, texto):
@@ -196,10 +196,10 @@ def pantalla_casa():
                     fondo_actual = fondo_noche
                     estado_accion = "dormido"
 
-                elif botones["curar"].collidepoint(event.pos):
+                """ elif botones["curar"].collidepoint(event.pos):
                     import frontend.pantallaHospital
                     frontend.pantallaHospital.pantalla_hospital()
-                    return
+                    return """
 
         #  Dibujo de fondo
         VENTANA.blit(fondo_actual, (0, 0))
