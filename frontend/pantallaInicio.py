@@ -72,8 +72,9 @@ def dibujar_fondo_animado(tiempo):
 
     Retorno: None (Solo dibuja sobre la ventana principal)
     """
-    color1 = (135, 206, 250)   # celeste brillante
-    color2 = (255, 182, 193)   # rosa pastel
+    color1 = (222, 184, 135) 
+    color2 = (210, 180, 140) 
+
     factor = (pygame.time.get_ticks() // 10) % 255 / 255
     r = int(color1[0] * (1 - factor) + color2[0] * factor)
     g = int(color1[1] * (1 - factor) + color2[1] * factor)
