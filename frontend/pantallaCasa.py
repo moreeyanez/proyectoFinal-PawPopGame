@@ -1,3 +1,43 @@
+"""
+Pantalla principal de la Casa del juego PawPop.
+
+Este módulo contiene la lógica visual e interactiva que define el entorno donde
+vive la mascota del jugador. La pantalla de la Casa permite realizar acciones 
+centrales del cuidado del animal, así como observar sus estados, energía, 
+alimentación y reacciones animadas.
+
+Funciones principales
+---------------------
+- `pantalla_casa()`:
+    Renderiza la pantalla completa de la Casa, incluyendo:
+    * Fondo dinámico según el momento (día/noche).
+    * Visualización de la mascota y sus distintos estados (feliz, jugando,
+      comiendo, dormido, enfermo, empachado, cansado).
+    * Botones de interacción: alimentar, jugar, dormir y curar.
+    * Detección automática del estado de la mascota desde el backend.
+    * Popup de alerta cuando la mascota está enferma, con opción directa
+      para enviarla al hospital.
+    * Cambio de pantalla hacia el Hospital cuando corresponde.
+
+- `mostrar_pantalla_casa(mascota)`:
+    Interfaz de entrada para abrir esta pantalla. Mantiene la firma para
+    compatibilidad con el flujo, aunque la mascota se obtiene realmente desde
+    `campo.mascota`.
+
+Contenido del módulo
+--------------------
+- Configuración inicial de ventana (tamaño, título).
+- Paleta de colores para elementos visuales.
+- Fuentes utilizadas en textos.
+- Diccionario que organiza todas las rutas de imágenes según especie y estado.
+- Sistema de botones con lógica de interacción mediante eventos de pygame.
+- Renderizado condicional dependiendo del estado actual de la mascota.
+- Gestión del popup semitransparente cuando la mascota requiere atención médica.
+
+Este módulo constituye uno de los espacios principales del juego, permitiendo
+al jugador interactuar con su mascota y mantener su bienestar.
+"""
+
 import pygame
 import sys
 from backend.controlador import campo, alimentar_mascota, jugar_con_mascota, dormir_mascota

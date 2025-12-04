@@ -1,3 +1,30 @@
+"""
+Pantalla de historial de mascotas liberadas del juego PawPop.
+
+Este módulo muestra una interfaz dedicada a visualizar la lista de mascotas
+que han sido liberadas a lo largo del juego. Obtiene la información desde el
+backend mediante `obtener_mascotas_liberadas()` y renderiza los datos en una
+tabla simple con nombre y especie de cada mascota.
+
+Características principales
+---------------------------
+- Renderización del historial de mascotas liberadas, filtrando únicamente
+  aquellas cuyo estado sea "liberada".
+- Presentación organizada en formato de tabla (Nombre / Tipo).
+- Botón para regresar a la pantalla del huevo (`pantalla_huevo`).
+- Bucle principal que gestiona eventos, entrada del jugador y refresco visual.
+
+Estructura
+----------
+Funciones:
+- `dibujar_texto()`: Utilidad para renderizar texto en pantalla.
+- `pantalla_historial()`: Controla la visualización completa del historial,
+  administra eventos y permite volver a la pantalla anterior.
+
+Este módulo forma parte del flujo principal del juego y se utiliza para que
+el jugador pueda consultar todas sus mascotas liberadas hasta el momento.
+"""
+
 import pygame
 import sys, os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
