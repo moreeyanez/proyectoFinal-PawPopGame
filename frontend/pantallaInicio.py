@@ -20,6 +20,7 @@ import sys, os, random, math
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.controlador import crear_jugador
 from frontend.pantallaHuevo import pantalla_huevo
+import re
 
 pygame.init()
 
@@ -224,6 +225,9 @@ def dibujar_emoji_sorpresa():
         superficie.set_alpha(220)
         VENTANA.blit(superficie, emoji_pos)
 
+error_mail = ""
+fuente_error = pygame.font.SysFont("Arial", 20)
+
 
 def pantalla_inicio():
     """
@@ -244,7 +248,7 @@ def pantalla_inicio():
 
     Retorno: None (La función no retorna valores; navega hacia otra pantalla)
     """
-    global nombre, mail, activo_nombre, activo_mail, color_nombre, color_mail, emoji_actual
+    global nombre, mail, activo_nombre, activo_mail, color_nombre, color_mail, emoji_actual, error_mail
     reloj = pygame.time.Clock()
 
     while True:
@@ -281,12 +285,17 @@ def pantalla_inicio():
                 activo_mail   = rect_mail.collidepoint(evento.pos)
                 if rect_ingresar.collidepoint(evento.pos):
                     if nombre and mail:
-                        emoji_actual = emoji_sorpresa() 
-                        try:
-                            crear_jugador(nombre, mail)
-                            pantalla_huevo()
-                        except ValueError as e:
-                            print("Error:", e)
+                        if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', mail):
+                            error_mail = "El mail no tiene un formato válido."
+                        else:
+                            error_mail = ""
+                            emoji_actual = emoji_sorpresa()
+                            try:
+                                crear_jugador(nombre, mail)
+                                pantalla_huevo()
+                                return
+                            except ValueError as e:
+                                error_mail = str(e)
 
             if evento.type == pygame.KEYDOWN:
                 if activo_nombre:
@@ -304,6 +313,9 @@ def pantalla_inicio():
 
         color_nombre = CELESTE if activo_nombre else MARRON
         color_mail   = CELESTE if activo_mail   else MARRON
+        
+        if error_mail:
+            dibujar_texto(error_mail, fuente_error, (200, 50, 50), 250, 370)
 
         pygame.display.flip()
         reloj.tick(30)
