@@ -11,6 +11,9 @@ jugador = None
 # Helpers seguros de estado/energía
 # ---------------------
 def _leer_energia_seguro(mascota):
+    """
+    Obtiene de forma segura el nivel de energía de una mascota.
+    """
     try:
         if hasattr(mascota, "ver_energia") and callable(mascota.ver_energia):
             return mascota.ver_energia()
@@ -22,6 +25,9 @@ def _leer_energia_seguro(mascota):
     return 0
 
 def _set_energia_seguro(mascota, valor):
+    """
+    Establece de forma segura el nivel de energía de una mascota.
+    """
     # Busca APIs públicas primero
     if hasattr(mascota, "set_energia") and callable(mascota.set_energia):
         mascota.set_energia(valor)
@@ -39,6 +45,9 @@ def _set_energia_seguro(mascota, valor):
     return False
 
 def _apagar_enfermedad_seguro(mascota):
+    """
+    Desactiva de forma segura cualquier indicador de enfermedad en un objeto mascota.
+    """
     # Apaga cualquier flag típico de "enfermo"
     for nombre in ("enfermo", "esta_enfermo", "estado_enfermo"):
         if hasattr(mascota, nombre):
@@ -50,6 +59,9 @@ def _apagar_enfermedad_seguro(mascota):
 # Jugador y creación
 # ---------------------
 def crear_jugador(nombre, mail):
+    """
+    Crea una instancia global de Jugador y la asigna a la variable `jugador`.
+    """
     global jugador
     try:
         jugador = Jugador(nombre, mail, campo)
@@ -58,9 +70,15 @@ def crear_jugador(nombre, mail):
         print(str(e))
 
 def hay_jugador():
+    """
+    Indica si ya existe un jugador creado en la sesión.
+    """
     return jugador is not None
 
 def crear_mascota(nombre, especie):
+    """
+    Crea una mascota en el campo del jugador actual.
+    """
     especies_validas = ["perro", "gato", "vaca", "conejo", "capibara"]
 
     if not jugador:
@@ -78,18 +96,27 @@ def crear_mascota(nombre, especie):
 # Acciones en Campo
 # ---------------------
 def alimentar_mascota():
+    """
+    Alimenta la mascota que está actualmente en el campo.
+    """
     if campo.mascota:
         campo.alimentar()
     else:
         print("No hay mascota en el campo.")
 
 def dormir_mascota():
+    """
+    Hace que la mascota del campo duerma y recupere energía.
+    """
     if campo.mascota:
         campo.mascota.dormir()
     else:
         print("No hay mascota en el campo.")
 
 def jugar_con_mascota():
+    """
+    Inicia la acción de juego con la mascota que está en el campo.
+    """
     if campo.mascota:
         campo.mascota.jugar()
     else:
@@ -100,7 +127,7 @@ def jugar_con_mascota():
 # ---------------------
 def enviar_al_hospital():
     """
-    Mueve la mascota del campo al hospital usando tu API de espacios.
+    Mueve la mascota del campo al hospital usando la API de espacios.
     No reinicia el juego ni crea una nueva mascota.
     """
     global hospital, campo
@@ -132,12 +159,18 @@ def curar_en_hospital():
 # Estado y liberación
 # ---------------------
 def ver_estado_mascota():
+    """
+    Muestra por consola el estado de la mascota que está en el campo.
+    """
     if campo.mascota:
         campo.ver()
     else:
         print("No hay mascota en el campo.")
 
 def preparar_liberacion():
+    """
+    Prepara la liberación de la mascota que se encuentra en el hospital.
+    """
     if hospital.mascota:
         hospital.eliminar(libertad)  # según tu diseño, transfiere mascota al espacio Libertad
         print("[backend] Mascota preparada para liberación.")
@@ -145,6 +178,9 @@ def preparar_liberacion():
         print("No hay mascota para liberar en hospital.")
 
 def confirmar_liberacion():
+    """
+    Confirma y finaliza la liberación de la mascota que está en Libertad.
+    """
     if libertad.mascota:
         # Guardar en historial del jugador
         jugador.mascotas_liberadas.append(libertad.mascota.get_dict())
@@ -160,17 +196,26 @@ def confirmar_liberacion():
         print("No hay mascota lista para liberar.")
 
 def ver_mascotas_liberadas():
+    """
+    Muestra por consola la lista de mascotas liberadas (registro en Libertad).
+    """
     if jugador:
         libertad.ver()
     else:
         print("No hay jugador creado.")
 
 def obtener_mascotas_liberadas():
+    """
+    Devuelve la lista de mascotas liberadas del jugador actual.
+    """
     if jugador:
         return jugador.mascotas_liberadas
     return []
 
 def salir_del_juego():
+    """
+    Finaliza la sesión del juego.
+    """
     if jugador:
         libertad.eliminar(jugador)
     else:

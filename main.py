@@ -10,14 +10,18 @@ import json
 # Historial de acciones
 historial = deque(maxlen=5)
 
-# 🧠 Guardar estado de mascota
 def guardar_estado(mascota):
+    """
+    Guarda el estado de una mascota en un archivo JSON.
+    """
     datos = mascota.get_dict()
     with open("estado_mascota.json", "w") as f:
         json.dump(datos, f)
 
-# 🧠 Cargar estado de mascota
 def cargar_estado():
+    """
+     Carga el estado de una mascota desde el archivo JSON `estado_mascota.json`.
+    """
     try:
         with open("estado_mascota.json", "r") as f:
             datos = json.load(f)
@@ -26,13 +30,15 @@ def cargar_estado():
     except FileNotFoundError:
         return None
 
-# 📜 Mostrar historial
 def mostrar_historial():
+    """
+    Imprime por consola las últimas acciones registradas en el historial.
+    """
     print("\nÚltimas acciones:")
     for accion in historial:
         print(f"- {accion}")
 
-# 🕹️ Menú principal
+# Menú principal
 def menu():
     print("\n--- PawPop 🐾 ---")
     print("1. Crear jugador")

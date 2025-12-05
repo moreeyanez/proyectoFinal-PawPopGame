@@ -32,6 +32,9 @@ class Mascota:
         return self.especie
     
     def definir_comida_por_especie(self, especie):
+        """
+        Devuelve la comida favorita asociada a una especie.
+        """
         comidas = {
             "Perro": "Croquetas",
             "Gato": "Atún",
